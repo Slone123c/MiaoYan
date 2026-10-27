@@ -242,3 +242,16 @@ pre:has(.language-mermaid) {
 .markmap svg {
   shape-rendering: geometricPrecision;
 }
+
+/* ==================== Pele (renders Mermaid blocks) ==================== */
+code.language-mermaid .pele {
+  --pele-bg: transparent;
+  --pele-fg: var(--mermaid-text-color);
+  --pele-muted: var(--mermaid-text-color);
+  --pele-line: var(--mermaid-line-color);
+  --pele-surface: var(--mermaid-node-bg);
+  --pele-border: var(--mermaid-border-color);
+  --pele-accent: var(--mermaid-line-color);
+  max-width: 100%;
+  height: auto;
+}

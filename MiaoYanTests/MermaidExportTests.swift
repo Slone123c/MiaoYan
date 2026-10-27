@@ -186,7 +186,7 @@ final class MermaidExportTests: XCTestCase {
             <html data-miaoyan-test-page="\(name)">
             <head>
               <meta charset="utf-8">
-              <script defer src="\(scriptDirectory.appendingPathComponent("mermaid.min.js").absoluteString)"></script>
+              <script defer src="\(scriptDirectory.appendingPathComponent("pele.min.js").absoluteString)"></script>
               <script defer src="\(scriptDirectory.appendingPathComponent("theme-config.js").absoluteString)"></script>
               <script defer src="\(scriptDirectory.appendingPathComponent("theme-manager.js").absoluteString)"></script>
               <script defer src="\(scriptDirectory.appendingPathComponent("diagram-handler.js").absoluteString)"></script>
