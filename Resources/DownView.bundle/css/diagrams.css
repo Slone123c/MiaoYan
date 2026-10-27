@@ -250,11 +250,12 @@ code.language-mermaid {
 }
 
 /* `.language-mermaid *` above pins a font on every node; let Pele's labels inherit --pele-font. */
-code.language-mermaid .pele * {
+:where(code.language-mermaid) .pele * {
   font-family: inherit;
 }
 
-code.language-mermaid .pele {
+/* Zero specificity so a note's own `.pele { --pele-* }` (or `.pele-flowchart`, ...) overrides it. */
+:where(code.language-mermaid) .pele {
   --pele-bg: transparent;
   --pele-fg: var(--mermaid-text-color);
   --pele-muted: var(--mermaid-text-color);
