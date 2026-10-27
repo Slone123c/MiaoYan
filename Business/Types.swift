@@ -26,6 +26,9 @@ enum SidebarItemType: Int {
     /// The MiaoYan lockup at the top of the sidebar, a mark rather than a
     /// place: it cannot be selected, and All Notes sits under it.
     case Brand = 0x04
+    /// A note shown in the tree of a folder opened on its own (File > Open a folder), so the
+    /// folder reads as a file tree; the library sidebar never holds one.
+    case File = 0x05
 }
 
 public enum AppearanceType: Int {

@@ -413,6 +413,12 @@ public enum UserDefaultsManagement {
             UserDefaults.standard.set(newValue, forKey: Constants.IsSingleMode)
         }
     }
+    /// A folder opened on its own (File > Open a folder): its sidebar is a file tree.
+    static var isFolderSingleMode: Bool {
+        guard isSingleMode, let url = singleModeURL else { return false }
+        return FileManager.default.directoryExists(atUrl: url)
+    }
+
     /// The library window's sidebar and note list visibility, kept while a single file has
     /// them collapsed so the library comes back as it was. Nil when there is nothing to restore.
     static var panelsBeforeSingleFile: (sidebar: Bool, noteList: Bool)? {

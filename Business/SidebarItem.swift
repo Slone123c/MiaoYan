@@ -6,12 +6,21 @@ class SidebarItem {
     var type: SidebarItemType
     public var icon: Image?
     public var children: [SidebarItem]?
+    /// Set for `.File` items only.
+    var note: Note?
 
     init(name: String, project: Project? = nil, type: SidebarItemType, icon: Image? = nil) {
         self.name = name
         self.project = project
         self.type = type
         self.icon = icon
+    }
+
+    /// A file row: no project, so folder actions (rename, move, delete, drop) pass it by.
+    @MainActor init(note: Note) {
+        self.name = note.url.deletingPathExtension().lastPathComponent
+        self.type = .File
+        self.note = note
     }
 
     public func getName() -> String { name }
@@ -48,6 +57,10 @@ class SidebarItem {
         }
         if type == .All || type == .Brand {
             return true
+        }
+        if type == .File {
+            // Storage keeps one Note per file.
+            return note === other.note
         }
         return name == other.name
     }

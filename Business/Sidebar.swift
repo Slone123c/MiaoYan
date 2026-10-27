@@ -39,6 +39,10 @@ class Sidebar {
 
         list.append(contentsOf: categoryItems)
 
+        if UserDefaultsManagement.isFolderSingleMode, let root = rootProjects.first {
+            list.append(contentsOf: storage.notesForTree(in: root).map { SidebarItem(note: $0) })
+        }
+
         if !storage.getAllTrash().isEmpty {
             let trashProject = Storage.sharedInstance().getDefaultTrash()
             let trash = SidebarItem(name: I18n.str("Trash"), project: trashProject, type: .Trash, icon: getImage(named: "trash\(night)"))
