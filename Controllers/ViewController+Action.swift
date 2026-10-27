@@ -1414,6 +1414,7 @@ extension ViewController {
         if event.keyCode == kVK_ANSI_W, event.modifierFlags.contains(.command), event.modifierFlags.contains(.shift) {
             if UserDefaultsManagement.isSingleMode {
                 UserDefaultsManagement.clearSingleMode()
+                UserDefaultsManagement.forgetLastFolder()
                 UserDefaultsManagement.isFirstLaunch = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.restart()
