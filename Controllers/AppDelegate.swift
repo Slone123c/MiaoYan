@@ -54,6 +54,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         migratePreferences()
         UserDefaultsManagement.migrateFontDefaultsIfNeeded()
         UserDefaultsManagement.clearSingleMode()
+        // A folder open at the last quit comes back as a launch request; a file opened from
+        // Finder arrives after this and replaces it.
+        if let folder = UserDefaultsManagement.lastFolderURL, FileManager.default.directoryExists(atUrl: folder) {
+            _ = folder.startAccessingSecurityScopedResource()
+            urls = [folder]
+        }
         let storage = appContext.storage
         storage.loadProjects()
         storage.loadDocuments {}
@@ -362,6 +368,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             return
         }
         UserDefaultsManagement.clearSingleMode()
+        UserDefaultsManagement.forgetLastFolder()
         UserDefaultsManagement.isFirstLaunch = true
         DispatchQueue.main.asyncAfter(deadline: .now() + UIDelay.short) {
             NSApp.terminate(nil)

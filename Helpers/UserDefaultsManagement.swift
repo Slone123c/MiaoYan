@@ -154,6 +154,7 @@ public enum UserDefaultsManagement {
         static let IsSingleMode = "isSingleMode"
         static let SingleModePath = "singleModePath"
         static let PanelsBeforeSingleFile = "panelsBeforeSingleFile"
+        static let LastFolderBookmark = "lastFolderBookmark"
         static let SingleModeBookmark = "singleModeBookmark"
         static let SingleModeAccessBookmark = "singleModeAccessBookmark"
         static let PreviewWidth = "previewWidth"
@@ -500,6 +501,25 @@ public enum UserDefaultsManagement {
         }
 
         return nil
+    }
+
+    /// The folder last opened on its own, reopened at launch until the library is chosen again.
+    /// Kept apart from the single-mode keys, which every launch and quit clear.
+    static var lastFolderURL: URL? {
+        resolveSecurityScopedURL(
+            bookmarkData: UserDefaults.standard.data(forKey: Constants.LastFolderBookmark),
+            bookmarkKey: Constants.LastFolderBookmark,
+            context: "UserDefaultsManagement.lastFolderURL",
+            resolveSymlinks: false)
+    }
+
+    /// Takes the open folder's bookmark, already security scoped, from single mode.
+    static func rememberSingleModeFolder() {
+        UserDefaults.standard.set(singleModeBookmark, forKey: Constants.LastFolderBookmark)
+    }
+
+    static func forgetLastFolder() {
+        UserDefaults.standard.removeObject(forKey: Constants.LastFolderBookmark)
     }
 
     static var singleModeURL: URL? {

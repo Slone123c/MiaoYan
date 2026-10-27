@@ -1251,9 +1251,12 @@ class ViewController:
                 if isSingleModeDirectory {
                     self.enterFolderLayout()
                     self.selectSingleModeNote(for: singleModeUrl)
+                    UserDefaultsManagement.rememberSingleModeFolder()
+                    NSDocumentController.shared.noteNewRecentDocumentURL(singleModeUrl)
                 } else {
                     self.selectSingleModeNote(for: singleModeUrl)
                     self.enterSingleFileLayout()
+                    UserDefaultsManagement.forgetLastFolder()
                 }
             }
 
