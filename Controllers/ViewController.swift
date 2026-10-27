@@ -1250,6 +1250,7 @@ class ViewController:
             if UserDefaultsManagement.isSingleMode {
                 if isSingleModeDirectory {
                     self.showSidebar("")
+                    self.selectSingleModeNote(for: singleModeUrl)
                 } else {
                     self.selectSingleModeNote(for: singleModeUrl)
                     self.enterSingleFileLayout()
@@ -1322,11 +1323,18 @@ class ViewController:
                 self.showSingleFileIdentity(url)
             }
         } else {
+            // The editor still holds whatever was open before the folder (a library note), and
+            // selecting a row that is already selected loads nothing, so fill it here as the
+            // single-file branch does, or clear it when the folder has no notes.
             DispatchQueue.main.async {
-                if !self.notesTableView.noteList.isEmpty {
-                    self.notesTableView.selectRow(0)
-                    self.notesTableView.scrollRowToVisible(row: 0, animated: false)
+                guard let note = self.notesTableView.noteList.first else {
+                    self.editArea.clear()
+                    return
                 }
+                self.notesTableView.selectRow(0)
+                self.notesTableView.scrollRowToVisible(row: 0, animated: false)
+                self.editArea.fill(note: note, options: .silent)
+                self.revealEditor()
             }
         }
     }
