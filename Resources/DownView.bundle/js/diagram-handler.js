@@ -44,12 +44,8 @@ const DiagramHandler = {
   _svgCache: new Map(),
 
   async initializeMermaid() {
-    if (!window.mermaid) return;
-
-    const isDark = this.isDarkMode();
-    const config = window.ThemeConfig?.getMermaidConfig(isDark) || {};
-
-    mermaid.initialize(config);
+    // Mermaid blocks are drawn by Pele; colors come from CSS variables, so no theme config.
+    if (!window.pele) return;
 
     const mermaidElements = document.querySelectorAll('.language-mermaid');
 
@@ -70,12 +66,12 @@ const DiagramHandler = {
       }
 
       // 2. Render fresh
-      const elementId = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+      const idPrefix = 'mermaid-' + Math.random().toString(36).substr(2, 9) + '-';
       const loader = this.createLoadingIndicator('Mermaid diagram');
       element.parentNode.insertBefore(loader, element);
 
       try {
-        const { svg } = await mermaid.render(elementId, content);
+        const { svg } = pele.render(content, { idPrefix, maxWidth: element.clientWidth || undefined });
         this._svgCache.set(hash, svg);
         element.innerHTML = svg;
         element.dataset.mermaidRendered = 'true';
