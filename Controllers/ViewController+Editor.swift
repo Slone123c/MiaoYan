@@ -1461,7 +1461,9 @@ extension ViewController {
         titleLabel.setStringValueSafely(title)
         UserDataService.instance.isUpdatingTitle = false
         titleLabel.currentEditor()?.selectedRange = NSRange(location: title.utf16.count, length: 0)
-        MainWindowController.shared()?.title = appName
+        // A file opened on its own names the window after itself, as a document window does.
+        let singleFileName = UserDefaultsManagement.isSingleMode ? EditTextView.note?.url.lastPathComponent : nil
+        MainWindowController.shared()?.title = singleFileName ?? appName
     }
 
     func controlTextDidChange(_ obj: Notification) {

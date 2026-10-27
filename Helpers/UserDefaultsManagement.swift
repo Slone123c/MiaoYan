@@ -153,6 +153,7 @@ public enum UserDefaultsManagement {
         static let SortDirection = "sortDirection"
         static let IsSingleMode = "isSingleMode"
         static let SingleModePath = "singleModePath"
+        static let PanelsBeforeSingleFile = "panelsBeforeSingleFile"
         static let SingleModeBookmark = "singleModeBookmark"
         static let SingleModeAccessBookmark = "singleModeAccessBookmark"
         static let PreviewWidth = "previewWidth"
@@ -412,6 +413,25 @@ public enum UserDefaultsManagement {
             UserDefaults.standard.set(newValue, forKey: Constants.IsSingleMode)
         }
     }
+    /// The library window's sidebar and note list visibility, kept while a single file has
+    /// them collapsed so the library comes back as it was. Nil when there is nothing to restore.
+    static var panelsBeforeSingleFile: (sidebar: Bool, noteList: Bool)? {
+        get {
+            guard let saved = UserDefaults.standard.dictionary(forKey: Constants.PanelsBeforeSingleFile) as? [String: Bool],
+                let sidebar = saved["sidebar"], let noteList = saved["noteList"]
+            else { return nil }
+            return (sidebar, noteList)
+        }
+        set {
+            if let newValue {
+                UserDefaults.standard.set(
+                    ["sidebar": newValue.sidebar, "noteList": newValue.noteList], forKey: Constants.PanelsBeforeSingleFile)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Constants.PanelsBeforeSingleFile)
+            }
+        }
+    }
+
     static var singleModePath: String {
         get {
             if let dl = UserDefaults.standard.object(forKey: Constants.SingleModePath) as? String {

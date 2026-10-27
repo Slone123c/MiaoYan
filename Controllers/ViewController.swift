@@ -1244,12 +1244,15 @@ class ViewController:
                     self.storageOutlineView.selectRowIndexes([capturedSidebarItem], byExtendingSelection: false)
                 }
             }
+            if !UserDefaultsManagement.isSingleMode {
+                self.restorePanelsAfterSingleFile()
+            }
             if UserDefaultsManagement.isSingleMode {
                 if isSingleModeDirectory {
                     self.showSidebar("")
                 } else {
-                    self.showSidebar("")
                     self.selectSingleModeNote(for: singleModeUrl)
+                    self.enterSingleFileLayout()
                 }
             }
 
@@ -1316,6 +1319,7 @@ class ViewController:
                 self.notesTableView.scrollRowToVisible(row: index, animated: false)
                 self.editArea.fill(note: note, options: .silent)
                 self.revealEditor()
+                self.showSingleFileIdentity(url)
             }
         } else {
             DispatchQueue.main.async {
@@ -1325,6 +1329,15 @@ class ViewController:
                 }
             }
         }
+    }
+
+    /// The window names the file in Mission Control, the Window menu and the Dock, the title
+    /// shows its full path on hover, and File > Open Recent lists it.
+    private func showSingleFileIdentity(_ url: URL) {
+        view.window?.title = url.lastPathComponent
+        view.window?.representedURL = url
+        titleLabel?.toolTip = (url.path as NSString).abbreviatingWithTildeInPath
+        NSDocumentController.shared.noteNewRecentDocumentURL(url)
     }
 
     // MARK: - Actions

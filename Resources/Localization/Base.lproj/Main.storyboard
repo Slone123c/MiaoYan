@@ -91,6 +91,19 @@ CA
                                                 <action selector="singleOpen:" target="L4m-js-agn" id="48w-4H-ICT"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Open Recent" identifier="fileMenu.openRecent" id="R3c-Op-n01">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="R3c-Op-n02">
+                                                <items>
+                                                    <menuItem title="Clear Menu" id="R3c-Op-n03">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="clearRecentDocuments:" target="Ady-hI-5gd" id="R3c-Op-n04"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
                                         <menuItem title="Import" identifier="fileMenu.import" id="imP-fl-mn1">
                                             <connections>
                                                 <action selector="importFiles:" target="L4m-js-agn" id="imP-fl-ac1"/>

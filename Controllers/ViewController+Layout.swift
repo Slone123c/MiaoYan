@@ -138,6 +138,36 @@ extension ViewController {
         normalizeNotelistWidth(saveState: false)
     }
 
+    /// A file opened on its own shows just the editor, as a document app does; the note list
+    /// (its folder's other notes) stays one Command-2 away. The library's panels are recorded
+    /// first, once per stay in single mode, and come back on the next launch.
+    func enterSingleFileLayout() {
+        if UserDefaultsManagement.panelsBeforeSingleFile == nil {
+            UserDefaultsManagement.panelsBeforeSingleFile = (isSidebarVisible, isNotelistVisible)
+        }
+        if isSidebarVisible {
+            setSidebarVisible(false, saveState: false)
+        }
+        if isNotelistVisible {
+            setNotelistVisible(false, saveState: false)
+        }
+    }
+
+    /// The split views autosave the collapsed state a single file left behind, so the library
+    /// reopens with the panels it had before. Called once the notes are listed: at
+    /// `ensurePanelsVisibleAtStartup` the autosaved divider positions have not been applied yet
+    /// and would collapse the panels again.
+    func restorePanelsAfterSingleFile() {
+        guard let saved = UserDefaultsManagement.panelsBeforeSingleFile else { return }
+        UserDefaultsManagement.panelsBeforeSingleFile = nil
+        if saved.noteList, !isNotelistVisible {
+            setNotelistVisible(true, saveState: false)
+        }
+        if saved.sidebar, !isSidebarVisible {
+            setSidebarVisible(true, saveState: false)
+        }
+    }
+
     private func setNotelistVisible(_ visible: Bool, saveState: Bool = true) {
         let noteListView = splitView.subviews.first
         if visible {
