@@ -668,3 +668,12 @@
 
 /* Class = "NSMenuItem"; title = "Move to…"; ObjectID = "MvF-01-iTm"; */
 "MvF-01-iTm.title" = "Mover a…";
+
+/* Class = "NSMenuItem"; title = "Open Recent"; ObjectID = "R3c-Op-n01"; */
+"R3c-Op-n01.title" = "Abrir recientes";
+
+/* Class = "NSMenu"; title = "Open Recent"; ObjectID = "R3c-Op-n02"; */
+"R3c-Op-n02.title" = "Abrir recientes";
+
+/* Class = "NSMenuItem"; title = "Clear Menu"; ObjectID = "R3c-Op-n03"; */
+"R3c-Op-n03.title" = "Borrar menú";
