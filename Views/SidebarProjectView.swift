@@ -606,6 +606,11 @@ class SidebarProjectView: NSOutlineView,
             cell.icon.image = NSImage(imageLiteralResourceName: "project")
             cell.icon.image?.isTemplate = true
             cell.icon.contentTintColor = Theme.sidebarActionColor
+
+        case .File:
+            cell.icon.image = NSImage(systemSymbolName: "doc.text", accessibilityDescription: nil)
+            cell.icon.image?.isTemplate = true
+            cell.icon.contentTintColor = Theme.sidebarActionColor
         }
     }
 
@@ -835,7 +840,8 @@ class SidebarProjectView: NSOutlineView,
 
     override func menu(for event: NSEvent) -> NSMenu? {
         let row = row(at: convert(event.locationInWindow, from: nil))
-        if row >= 0, let item = item(atRow: row) as? SidebarItem, !item.isSelectable() {
+        // The folder menu acts on folders; a file row only opens its note.
+        if row >= 0, let item = item(atRow: row) as? SidebarItem, !item.isSelectable() || item.type == .File {
             return nil
         }
         return super.menu(for: event)
@@ -887,6 +893,12 @@ class SidebarProjectView: NSOutlineView,
         if let view = notification.object as? NSOutlineView {
 
             let i = view.selectedRow
+
+            if let item = view.item(atRow: i) as? SidebarItem, item.type == .File, let note = item.note {
+                UserDataService.instance.skipSidebarSelection = false
+                vd.openFromFileTree(note)
+                return
+            }
 
             if let item = view.item(atRow: i) as? SidebarItem {
                 // During app launch, skip saving selection to avoid overwriting persisted state
@@ -1284,7 +1296,8 @@ class SidebarProjectView: NSOutlineView,
             }
 
             switch type {
-            case .Brand:
+            case .Brand, .File:
+                // A file click never records itself as the sidebar selection.
                 return nil
             case .All:
                 return row
@@ -1381,9 +1394,12 @@ class SidebarProjectView: NSOutlineView,
     private func getSubdirectories(for sidebarItem: SidebarItem) -> [SidebarItem] {
         guard let project = sidebarItem.project, sidebarItem.type == .Category else { return [] }
         let icon = NSImage(imageLiteralResourceName: "project")
-        return storage.subfolders(of: project).map {
+        let folders = storage.subfolders(of: project).map {
             SidebarItem(name: $0.label, project: $0, type: .Category, icon: icon)
         }
+        // A folder opened on its own lists its notes under each folder, as a file tree.
+        guard UserDefaultsManagement.isFolderSingleMode else { return folders }
+        return folders + storage.notesForTree(in: project).map { SidebarItem(note: $0) }
     }
 
     private func clearChildrenCache(for targetProject: Project, in items: [Any]) {

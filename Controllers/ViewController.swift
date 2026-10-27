@@ -1249,7 +1249,7 @@ class ViewController:
             }
             if UserDefaultsManagement.isSingleMode {
                 if isSingleModeDirectory {
-                    self.showSidebar("")
+                    self.enterFolderLayout()
                     self.selectSingleModeNote(for: singleModeUrl)
                 } else {
                     self.selectSingleModeNote(for: singleModeUrl)
@@ -1337,6 +1337,17 @@ class ViewController:
                 self.revealEditor()
             }
         }
+    }
+
+    /// A note picked in a folder's file tree. The note list may be hidden or showing another
+    /// folder, so the editor is filled directly and the list follows when the note is in it.
+    func openFromFileTree(_ note: Note) {
+        guard EditTextView.note?.url != note.url else { return }
+        if let index = notesTableView.getIndex(note) {
+            notesTableView.selectRow(index, ensureVisible: true, suppressSideEffects: true)
+        }
+        editArea.fill(note: note, options: .silent)
+        revealEditor()
     }
 
     /// The window names the file in Mission Control, the Window menu and the Dock, the title

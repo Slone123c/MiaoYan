@@ -153,6 +153,20 @@ extension ViewController {
         }
     }
 
+    /// A folder opened on its own reads as a file tree: the sidebar lists its folders and notes,
+    /// and the note list stays one Command-2 away. `showSidebar` would bring the list back.
+    func enterFolderLayout() {
+        if UserDefaultsManagement.panelsBeforeSingleFile == nil {
+            UserDefaultsManagement.panelsBeforeSingleFile = (isSidebarVisible, isNotelistVisible)
+        }
+        if isNotelistVisible {
+            setNotelistVisible(false, saveState: false)
+        }
+        if !isSidebarVisible {
+            setSidebarVisible(true, saveState: false)
+        }
+    }
+
     /// The split views autosave the collapsed state a single file left behind, so the library
     /// reopens with the panels it had before. Called once the notes are listed: at
     /// `ensurePanelsVisibleAtStartup` the autosaved divider positions have not been applied yet

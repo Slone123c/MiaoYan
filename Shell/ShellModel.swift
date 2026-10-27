@@ -414,6 +414,9 @@ final class ShellModel {
                 // showInSidebar flag is not honoured there either.
                 guard let project = item.project else { continue }
                 addFolder(project, title: item.getName(), depth: 0)
+            case .File:
+                // The folder file tree is the storyboard sidebar's for now.
+                continue
             }
         }
         sidebarRows = rows

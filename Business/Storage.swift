@@ -127,6 +127,17 @@ class Storage {
         return found.sorted { $0.label.localizedCaseInsensitiveCompare($1.label) == .orderedAscending }
     }
 
+    /// The notes directly inside `project`, in name order, for the file tree of a folder opened
+    /// on its own. A folder deeper than the first level is registered by `subfolders(of:)`
+    /// without its notes, so those are loaded the first time the tree asks.
+    public func notesForTree(in project: Project) -> [Note] {
+        if !noteList.contains(where: { $0.project === project }) {
+            loadLabel(project)
+        }
+        return noteList.filter { $0.project === project && !$0.isTrash() }
+            .sorted { $0.url.lastPathComponent.localizedStandardCompare($1.url.lastPathComponent) == .orderedAscending }
+    }
+
     public func getRootProject() -> Project? {
         projects.first(where: { $0.isRoot })
     }
