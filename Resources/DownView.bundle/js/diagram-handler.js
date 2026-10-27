@@ -20,10 +20,8 @@ const DiagramHandler = {
   },
 
   initializeAll() {
-    const isDark = this.isDarkMode();
-
-    window.ThemeConfig?.applyCSSVariables?.(isDark);
-
+    // Mermaid colors come from the theme stylesheets (--mermaid-* feeding --pele-*). Writing them
+    // inline here would pin the light values over the stylesheets' dark rules.
     this.initializeMermaid();
     this.initializePlantUML();
     this.initializeMarkmap();

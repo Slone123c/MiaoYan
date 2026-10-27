@@ -397,6 +397,11 @@ img.border {
     --border-color: #3A3936;
     --code-bg: #282724;
     --diagram-bg: #282724;
+    /* Pele reads these through --pele-*; keep them in step with theme-dark.css. */
+    --mermaid-node-bg: #2B2A27;
+    --mermaid-text-color: #E7E9EA;
+    --mermaid-border-color: #45433F;
+    --mermaid-line-color: #54C59F;
   }
 
   html {
