@@ -41,6 +41,48 @@ const DiagramHandler = {
   // Cache for SVG content to support zero-delay re-rendering
   _svgCache: new Map(),
 
+  // Reads a diagram's own Pele variables from a `pele:` map in its frontmatter:
+  //   ---
+  //   pele:
+  //     line: "#ff7979"
+  //     radius: 12px
+  //   ---
+  // `line` stands for --pele-line; a key may also be written in full as --pele-line. Pele itself
+  // ignores the key, and so does Mermaid elsewhere.
+  _peleVariables(content) {
+    const front = content.match(/^\s*---[ \t]*\r?\n([\s\S]*?)\r?\n[ \t]*---[ \t]*(?:\r?\n|$)/);
+    if (!front) return [];
+    const lines = front[1].split(/\r?\n/);
+    const start = lines.findIndex((line) => /^pele:\s*$/.test(line));
+    if (start === -1) return [];
+
+    const variables = [];
+    for (const line of lines.slice(start + 1)) {
+      if (!/^\s/.test(line)) break; // the next top-level key ends the map
+      const entry = line.match(/^\s+(?:--pele-)?([a-z0-9-]+)\s*:\s*(.+?)\s*$/i);
+      if (!entry) continue;
+      const value = entry[2].replace(/^(["'])(.*)\1$/, '$2');
+      // A value is one CSS value; anything that could end the declaration is dropped.
+      if (/[;{}<>]/.test(value)) continue;
+      variables.push(['--pele-' + entry[1].toLowerCase(), value]);
+    }
+    return variables;
+  },
+
+  // Set on the <svg> itself, so they outrank a note-wide `.pele { ... }` rule; a node's own
+  // `style` or `classDef` still outranks both.
+  _showDiagram(element, svg, content) {
+    element.innerHTML = svg;
+    const root = element.querySelector('svg.pele');
+    if (root) {
+      for (const [name, value] of this._peleVariables(content)) {
+        root.style.setProperty(name, value);
+      }
+    }
+    element.dataset.mermaidRendered = 'true';
+    element.setAttribute('data-processed', 'true');
+  },
+
   async initializeMermaid() {
     // Mermaid blocks are drawn by Pele; colors come from CSS variables, so no theme config.
     if (!window.pele) return;
@@ -57,9 +99,7 @@ const DiagramHandler = {
 
       // 1. Check Cache
       if (this._svgCache.has(hash)) {
-        element.innerHTML = this._svgCache.get(hash);
-        element.dataset.mermaidRendered = 'true';
-        element.setAttribute('data-processed', 'true');
+        this._showDiagram(element, this._svgCache.get(hash), content);
         return;
       }
 
@@ -71,9 +111,7 @@ const DiagramHandler = {
       try {
         const { svg } = pele.render(content, { idPrefix, maxWidth: element.clientWidth || undefined });
         this._svgCache.set(hash, svg);
-        element.innerHTML = svg;
-        element.dataset.mermaidRendered = 'true';
-        element.setAttribute('data-processed', 'true');
+        this._showDiagram(element, svg, content);
       } catch (error) {
         console.error('Mermaid rendering failed:', error);
         // Keep the original fenced-block source in place; do not inject verbose error HTML
