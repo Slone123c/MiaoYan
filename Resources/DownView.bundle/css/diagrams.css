@@ -244,6 +244,16 @@ pre:has(.language-mermaid) {
 }
 
 /* ==================== Pele (renders Mermaid blocks) ==================== */
+/* The note's text face by default; a --pele-font set on the block or the SVG still wins. */
+code.language-mermaid {
+  --pele-font: var(--text-font), -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, sans-serif;
+}
+
+/* `.language-mermaid *` above pins a font on every node; let Pele's labels inherit --pele-font. */
+code.language-mermaid .pele * {
+  font-family: inherit;
+}
+
 code.language-mermaid .pele {
   --pele-bg: transparent;
   --pele-fg: var(--mermaid-text-color);
